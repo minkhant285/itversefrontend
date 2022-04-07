@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { findProducts, getAllProducts } from "./apis";
+import { countAllProducts, findProducts, getAllProducts } from "./apis";
 import { Product } from "./models";
 import { Card, Column, Row, Text, Title } from "./styled";
 import UpdateForm from "./updateForm";
-import { AutoComplete, Input, Modal, SelectProps } from "antd";
+import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
 import "antd/dist/antd.css";
 // const { Search } = Input;
 
@@ -12,9 +12,11 @@ let tempArr: Product[];
 
 function App() {
     const [products, setProducts] = useState<Product[]>();
+    const [totoalProducts, setTotalProducts] = useState<number>();
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const [options, setOptions] = useState<SelectProps<object>["options"]>([]);
     const [searchKey, setSearchKey] = useState<string>("");
+    const [page, setPage] = useState<number>(1);
 
     const [show, setShow] = useState(false);
 
@@ -23,13 +25,16 @@ function App() {
 
     useEffect(() => {
         console.log("effect called");
-        getAllProducts().then((r) => {
+        countAllProducts().then((r) => {
+            setTotalProducts(r);
+        });
+        getAllProducts(page).then((r) => {
             if (JSON.stringify(products) !== JSON.stringify(r)) {
                 setProducts(r);
                 tempArr = r;
             }
         });
-    }, [show]);
+    }, [show, page, totoalProducts]);
 
     function getRandomInt(max: number, min: number = 0) {
         return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
@@ -121,85 +126,161 @@ function App() {
 
     return (
         <div className="App">
-            <Row>
-                <AutoComplete
-                    dropdownMatchSelectWidth={252}
-                    style={{ width: 300 }}
-                    options={options}
-                    onSelect={onSelect}
-                    onSearch={onSearch}
-                    onClear={() => console.log("clear")}
-                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                        serachProducts(e)
-                    }
-                >
-                    <Input.Search
-                        value={searchKey}
-                        size="large"
-                        placeholder="input here"
-                        enterButton="Search"
-                        allowClear
-                    />
-                </AutoComplete>
-            </Row>
-            <Row>
-                <div
-                    style={{
-                        display: "flex",
-                        flexDirection: "row",
-                        flexWrap: "wrap",
-                    }}
-                >
-                    {products?.map((res) => (
-                        <div
-                            key={res.stock_id}
-                            style={{
-                                width: 230,
-                                margin: 2,
-                            }}
-                        >
-                            <Card
-                                onClick={() => {
-                                    JSON.stringify(selectedProduct) !==
-                                        JSON.stringify(res) &&
-                                        setSelectedProduct(res);
-                                    handleShow();
+            <Column flex={1} height="100%">
+                <Row>
+                    <AutoComplete
+                        dropdownMatchSelectWidth={252}
+                        style={{ width: 300 }}
+                        options={options}
+                        onSelect={onSelect}
+                        onSearch={onSearch}
+                        onClear={() => console.log("clear")}
+                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                            serachProducts(e)
+                        }
+                    >
+                        <Input.Search
+                            value={searchKey}
+                            size="large"
+                            placeholder={totoalProducts?.toString()}
+                            enterButton="Search"
+                            allowClear
+                        />
+                    </AutoComplete>
+
+                    <Button
+                        onClick={() => {
+                            getAllProducts(1).then((r) => {
+                                if (
+                                    JSON.stringify(products) !==
+                                    JSON.stringify(r)
+                                ) {
+                                    setProducts(r);
+                                }
+                            });
+                        }}
+                    >
+                        page 1
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            getAllProducts(2).then((r) => {
+                                if (
+                                    JSON.stringify(products) !==
+                                    JSON.stringify(r)
+                                ) {
+                                    setProducts(r);
+                                }
+                            });
+                        }}
+                    >
+                        page 2
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            getAllProducts(3).then((r) => {
+                                console.log(r);
+                                if (
+                                    JSON.stringify(products) !==
+                                    JSON.stringify(r)
+                                ) {
+                                    setProducts(r);
+                                }
+                            });
+                        }}
+                    >
+                        page 3
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            getAllProducts(4).then((r) => {
+                                if (
+                                    JSON.stringify(products) !==
+                                    JSON.stringify(r)
+                                ) {
+                                    setProducts(r);
+                                }
+                            });
+                        }}
+                    >
+                        page 4
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            getAllProducts(5).then((r) => {
+                                if (
+                                    JSON.stringify(products) !==
+                                    JSON.stringify(r)
+                                ) {
+                                    setProducts(r);
+                                }
+                            });
+                        }}
+                    >
+                        page 5
+                    </Button>
+                </Row>
+                <Row>
+                    <div
+                        style={{
+                            display: "flex",
+                            flexDirection: "row",
+                            flexWrap: "wrap",
+                        }}
+                    >
+                        {products?.map((res) => (
+                            <div
+                                key={res.stock_id}
+                                style={{
+                                    width: 230,
+                                    margin: 2,
                                 }}
                             >
-                                <Column>
-                                    <img
-                                        src={res.picture}
-                                        width={200}
-                                        height={150}
-                                        className="image"
-                                        alt={res.picture}
-                                    />
+                                <Card
+                                    onClick={() => {
+                                        JSON.stringify(selectedProduct) !==
+                                            JSON.stringify(res) &&
+                                            setSelectedProduct(res);
+                                        handleShow();
+                                    }}
+                                >
+                                    <Column>
+                                        <img
+                                            src={res.picture}
+                                            width={200}
+                                            height={150}
+                                            className="image"
+                                            alt={res.picture}
+                                        />
 
-                                    <Title size={"small"}>
-                                        {res.item_name}
-                                    </Title>
+                                        <Title size={"small"}>
+                                            {res.item_name}
+                                        </Title>
 
-                                    <Row
-                                        justify="space-between"
-                                        padding="10px 0px 10px 0px"
-                                    >
-                                        {res.unit_in_stock > 0 ? (
-                                            <Text color="green">In Stock</Text>
-                                        ) : (
-                                            <Text color="red">
-                                                Out of Stock
-                                            </Text>
-                                        )}
+                                        <Row
+                                            justify="space-between"
+                                            padding="10px 0px 10px 0px"
+                                        >
+                                            {res.unit_in_stock > 0 ? (
+                                                <Text color="green">
+                                                    In Stock
+                                                </Text>
+                                            ) : (
+                                                <Text color="red">
+                                                    Out of Stock
+                                                </Text>
+                                            )}
 
-                                        <Text>{res.unit_price} MMK</Text>
-                                    </Row>
-                                </Column>
-                            </Card>
-                        </div>
-                    ))}
-                </div>
-                <ModalComp />
-            </Row>
+                                            <Text>{res.unit_price} MMK</Text>
+                                        </Row>
+                                    </Column>
+                                </Card>
+                            </div>
+                        ))}
+                    </div>
+                    <ModalComp />
+                </Row>
+            </Column>
         </div>
     );
 }

@@ -1,9 +1,17 @@
 import axios from "axios";
 const endpointUrl = "products";
 
-export async function getAllProducts() {
+export async function getAllProducts(page: number) {
     const response = await axios
-        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}`);
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/page/${page}`);
+    return response.data;
+}
+
+export async function countAllProducts() {
+    const response = await axios
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}`, {
+
+        });
     return response.data;
 }
 
