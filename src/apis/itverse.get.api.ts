@@ -1,12 +1,13 @@
 import axios from "axios";
+import { Environment } from "./env";
 
-const host = "192.168.100.5";
-const port = 4000;
+const host = Environment.host;
+const port = Environment.port;
 const endpointUrl = "products";
 
 export function getAllProducts() {
     return axios
-        .get(`http://${host}:${port}/${endpointUrl}`)
+        .get(`https://${host}:${port}/${endpointUrl}`)
         .then(function (response) {
             // handle success
             return response.data;
