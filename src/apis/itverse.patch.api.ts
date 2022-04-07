@@ -1,9 +1,5 @@
 import axios from "axios";
 import { ProductInput } from "../models";
-import { Environment } from "./env";
-
-const host = Environment.host;
-const port = Environment.port;
 const endpointUrl = "products";
 
 export function productUpdate(
@@ -11,7 +7,7 @@ export function productUpdate(
     product: ProductInput
 ) {
     axios
-        .patch(`https://${host}/${endpointUrl}/${product_id}`, {
+        .patch(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/${product_id}`, {
             sku: product.sku,
             item_name: product.item_name,
             unit_in_stock: product.unit_in_stock,

@@ -1,14 +1,10 @@
 import axios from "axios";
 import { ProductInput } from "../models";
-import { Environment } from "./env";
-
-const host = Environment.host;
-const port = Environment.port;
 const endpointUrl = "products";
 
 export function addProduct(product: ProductInput) {
     axios
-        .post(`https://${host}/${endpointUrl}`, {
+        .post(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}`, {
             sku: product.sku,
             item_name: product.item_name,
             unit_in_stock: product.unit_in_stock,

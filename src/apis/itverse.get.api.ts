@@ -1,15 +1,14 @@
 import axios from "axios";
-import { Environment } from "./env";
-
-const host = Environment.host;
-const port = Environment.port;
 const endpointUrl = "products";
 
-export function getAllProducts() {
-    return axios
-        .get(`https://${host}/${endpointUrl}`)
-        .then(function (response) {
-            // handle success
-            return response.data;
-        });
+export async function getAllProducts() {
+    const response = await axios
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}`);
+    return response.data;
+}
+
+export async function findProducts(searchKey: string) {
+    const response = await axios
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/search/${searchKey}`);
+    return response.data;
 }

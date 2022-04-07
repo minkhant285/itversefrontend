@@ -1,17 +1,20 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./App.css";
-import { getAllProducts } from "./apis";
+import { findProducts, getAllProducts } from "./apis";
 import { Product } from "./models";
 import { Card, Column, Row, Text, Title } from "./styled";
 import UpdateForm from "./updateForm";
 import { AutoComplete, Input, Modal, SelectProps } from "antd";
 import "antd/dist/antd.css";
-const { Search } = Input;
+// const { Search } = Input;
+
+let tempArr: Product[];
 
 function App() {
     const [products, setProducts] = useState<Product[]>();
     const [selectedProduct, setSelectedProduct] = useState<Product>();
     const [options, setOptions] = useState<SelectProps<object>["options"]>([]);
+    const [searchKey, setSearchKey] = useState<string>("");
 
     const [show, setShow] = useState(false);
 
@@ -19,49 +22,58 @@ function App() {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        getAllProducts().then(
-            (r) =>
-                JSON.stringify(products) !== JSON.stringify(r) && setProducts(r)
-        );
-    }, [products, show]);
+        console.log("effect called");
+        getAllProducts().then((r) => {
+            if (JSON.stringify(products) !== JSON.stringify(r)) {
+                setProducts(r);
+                tempArr = r;
+            }
+        });
+    }, [show]);
 
     function getRandomInt(max: number, min: number = 0) {
         return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
     }
 
-    const searchResult = (query: string) =>
-        new Array(getRandomInt(5))
-            .join(".")
-            .split(".")
-            .map((_, idx) => {
-                const category = `${query}${idx}`;
-                return {
-                    value: category,
-                    label: (
-                        <div
-                            style={{
-                                display: "flex",
-                                justifyContent: "space-between",
-                            }}
-                        >
-                            <span>
-                                Found {query} on{" "}
-                                <a
-                                    href={`https://s.taobao.com/search?q=${query}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {category}
-                                </a>
-                            </span>
-                            <span>{getRandomInt(200, 100)} results</span>
-                        </div>
-                    ),
-                };
-            });
+    // const searchResult = (query: string) =>
+    //     new Array(getRandomInt(5))
+    //         .join(".")
+    //         .split(".")
+    //         .map((_, idx) => {
+    //             const category = `${query}${idx}`;
+    //             return {
+    //                 value: category,
+    //                 label: (
+    //                     <div
+    //                         style={{
+    //                             display: "flex",
+    //                             justifyContent: "space-between",
+    //                         }}
+    //                     >
+    //                         <span>
+    //                             Found {query} on{" "}
+    //                             <a
+    //                                 href={`https://s.taobao.com/search?q=${query}`}
+    //                                 target="_blank"
+    //                                 rel="noopener noreferrer"
+    //                             >
+    //                                 {category}
+    //                             </a>
+    //                         </span>
+    //                         <span>{getRandomInt(200, 100)} results</span>
+    //                     </div>
+    //                 ),
+    //             };
+    //         });
 
-    const onSearch = (value: string) =>
-        setOptions(value ? searchResult(value) : []);
+    const onSearch = (value: string) => {
+        if (value === "") {
+            setProducts(tempArr);
+            // console.log(tempArr);
+        }
+        setSearchKey(value);
+    };
+    // setOptions(value ? searchResult(value) : []);
 
     const ModalComp = () => (
         <Modal
@@ -92,6 +104,21 @@ function App() {
         console.log("onSelect", value);
     };
 
+    async function serachProducts(e: React.KeyboardEvent<HTMLDivElement>) {
+        if (e.key === "Enter") {
+            setProducts(
+                await findProducts(
+                    searchKey
+                        .replace(/[^a-zA-Z0-9 ]/g, "")
+                        .trim()
+                        .split(" ")
+                        .filter((d) => d !== "")
+                        .join("&")
+                )
+            );
+        }
+    }
+
     return (
         <div className="App">
             <Row>
@@ -101,8 +128,13 @@ function App() {
                     options={options}
                     onSelect={onSelect}
                     onSearch={onSearch}
+                    onClear={() => console.log("clear")}
+                    onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
+                        serachProducts(e)
+                    }
                 >
                     <Input.Search
+                        value={searchKey}
                         size="large"
                         placeholder="input here"
                         enterButton="Search"
