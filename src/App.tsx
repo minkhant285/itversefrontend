@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { countAllProducts, findProducts, getAllProducts } from "./apis";
 import { Product } from "./models";
-import { Card, Column, Row, Text, Title } from "./styled";
+import { Card, Column, ProductContainer, Row, Text, Title } from "./styled";
 import UpdateForm from "./updateForm";
 import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
 import "antd/dist/antd.css";
@@ -127,7 +127,10 @@ function App() {
     return (
         <div className="App">
             <Column flex={1} height="100%">
-                <Row>
+                <Row align="center" spacing="0px 10px" bgcolor="#fff">
+                    <span style={{ fontWeight: "bold", fontSize: 18 }}>
+                        ITVerse
+                    </span>
                     <AutoComplete
                         dropdownMatchSelectWidth={252}
                         style={{ width: 300 }}
@@ -147,7 +150,57 @@ function App() {
                             allowClear
                         />
                     </AutoComplete>
+                </Row>
+                <Row>
+                    <ProductContainer>
+                        {products?.map((res) => (
+                            <Card
+                                key={res.stock_id}
+                                // onClick={() => {
+                                //     JSON.stringify(selectedProduct) !==
+                                //         JSON.stringify(res) &&
+                                //         setSelectedProduct(res);
+                                //     handleShow();
+                                // }}
+                            >
+                                <Column>
+                                    <img
+                                        src={res.picture}
+                                        width={150}
+                                        height={150}
+                                        className="image"
+                                        alt={res.picture}
+                                        style={{
+                                            objectFit: "contain",
+                                            alignSelf: "center",
+                                        }}
+                                    />
 
+                                    <Title size={"small"}>
+                                        {res.item_name}
+                                    </Title>
+
+                                    <Row
+                                        justify="space-between"
+                                        padding="10px 0px 10px 0px"
+                                    >
+                                        {res.unit_in_stock > 0 ? (
+                                            <Text color="green">In Stock</Text>
+                                        ) : (
+                                            <Text color="red">
+                                                Out of Stock
+                                            </Text>
+                                        )}
+
+                                        <Text>{res.unit_price} MMK</Text>
+                                    </Row>
+                                </Column>
+                            </Card>
+                        ))}
+                    </ProductContainer>
+                    <ModalComp />
+                </Row>
+                <Row flex={1} justify="center">
                     <Button
                         onClick={() => {
                             getAllProducts(1).then((r) => {
@@ -219,66 +272,6 @@ function App() {
                     >
                         page 5
                     </Button>
-                </Row>
-                <Row>
-                    <div
-                        style={{
-                            display: "flex",
-                            flexDirection: "row",
-                            flexWrap: "wrap",
-                        }}
-                    >
-                        {products?.map((res) => (
-                            <div
-                                key={res.stock_id}
-                                style={{
-                                    width: 230,
-                                    margin: 2,
-                                }}
-                            >
-                                <Card
-                                    onClick={() => {
-                                        JSON.stringify(selectedProduct) !==
-                                            JSON.stringify(res) &&
-                                            setSelectedProduct(res);
-                                        handleShow();
-                                    }}
-                                >
-                                    <Column>
-                                        <img
-                                            src={res.picture}
-                                            width={200}
-                                            height={150}
-                                            className="image"
-                                            alt={res.picture}
-                                        />
-
-                                        <Title size={"small"}>
-                                            {res.item_name}
-                                        </Title>
-
-                                        <Row
-                                            justify="space-between"
-                                            padding="10px 0px 10px 0px"
-                                        >
-                                            {res.unit_in_stock > 0 ? (
-                                                <Text color="green">
-                                                    In Stock
-                                                </Text>
-                                            ) : (
-                                                <Text color="red">
-                                                    Out of Stock
-                                                </Text>
-                                            )}
-
-                                            <Text>{res.unit_price} MMK</Text>
-                                        </Row>
-                                    </Column>
-                                </Card>
-                            </div>
-                        ))}
-                    </div>
-                    <ModalComp />
                 </Row>
             </Column>
         </div>
