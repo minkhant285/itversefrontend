@@ -11,7 +11,7 @@ export function productUpdate(
     product: ProductInput
 ) {
     axios
-        .patch(`https://${host}:${port}/${endpointUrl}/${product_id}`, {
+        .patch(`https://${host}/${endpointUrl}/${product_id}`, {
             sku: product.sku,
             item_name: product.item_name,
             unit_in_stock: product.unit_in_stock,

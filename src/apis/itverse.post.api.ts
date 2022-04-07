@@ -8,7 +8,7 @@ const endpointUrl = "products";
 
 export function addProduct(product: ProductInput) {
     axios
-        .post(`https://${host}:${port}/${endpointUrl}`, {
+        .post(`https://${host}/${endpointUrl}`, {
             sku: product.sku,
             item_name: product.item_name,
             unit_in_stock: product.unit_in_stock,

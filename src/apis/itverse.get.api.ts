@@ -7,7 +7,7 @@ const endpointUrl = "products";
 
 export function getAllProducts() {
     return axios
-        .get(`https://${host}:${port}/${endpointUrl}`)
+        .get(`https://${host}/${endpointUrl}`)
         .then(function (response) {
             // handle success
             return response.data;
