@@ -147,6 +147,18 @@ function App() {
                             size="large"
                             placeholder={totoalProducts?.toString()}
                             enterButton="Search"
+                            onSearch={async () =>
+                                setProducts(
+                                    await findProducts(
+                                        searchKey
+                                            .replace(/[^a-zA-Z0-9 ]/g, "")
+                                            .trim()
+                                            .split(" ")
+                                            .filter((d) => d !== "")
+                                            .join("&")
+                                    )
+                                )
+                            }
                             allowClear
                         />
                     </AutoComplete>
