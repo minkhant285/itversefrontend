@@ -1,4 +1,6 @@
 import styled from "styled-components";
+import { Input as AntInput, InputProps } from "antd";
+import React from "react";
 
 export const Input: React.FC<
     React.DetailedHTMLProps<

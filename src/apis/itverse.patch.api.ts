@@ -1,7 +1,7 @@
 import axios from "axios";
 import { ProductInput } from "../models";
 
-const host = "127.0.0.1";
+const host = "192.168.100.5";
 const port = 4000;
 const endpointUrl = "products";
 

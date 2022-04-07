@@ -4,12 +4,14 @@ import { getAllProducts } from "./apis";
 import { Product } from "./models";
 import { Card, Column, Row, Text, Title } from "./styled";
 import UpdateForm from "./updateForm";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { Modal } from "react-bootstrap";
+import { AutoComplete, Input, Modal, SelectProps } from "antd";
+import "antd/dist/antd.css";
+const { Search } = Input;
 
 function App() {
     const [products, setProducts] = useState<Product[]>();
     const [selectedProduct, setSelectedProduct] = useState<Product>();
+    const [options, setOptions] = useState<SelectProps<object>["options"]>([]);
 
     const [show, setShow] = useState(false);
 
@@ -23,14 +25,55 @@ function App() {
         );
     }, [products, show]);
 
+    function getRandomInt(max: number, min: number = 0) {
+        return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
+    }
+
+    const searchResult = (query: string) =>
+        new Array(getRandomInt(5))
+            .join(".")
+            .split(".")
+            .map((_, idx) => {
+                const category = `${query}${idx}`;
+                return {
+                    value: category,
+                    label: (
+                        <div
+                            style={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            <span>
+                                Found {query} on{" "}
+                                <a
+                                    href={`https://s.taobao.com/search?q=${query}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
+                                    {category}
+                                </a>
+                            </span>
+                            <span>{getRandomInt(200, 100)} results</span>
+                        </div>
+                    ),
+                };
+            });
+
+    const onSearch = (value: string) =>
+        setOptions(value ? searchResult(value) : []);
+
     const ModalComp = () => (
-        <Modal show={show} onHide={handleClose}>
-            <Modal.Header closeButton>
-                <Modal.Title>Update Proudct</Modal.Title>
-            </Modal.Header>
-            <Column>
-                <UpdateForm product={selectedProduct} setShow={setShow} />
-            </Column>
+        <Modal
+            centered
+            title="Update Product"
+            style={{ height: "fit-content" }}
+            visible={show}
+            onOk={handleClose}
+            onCancel={handleClose}
+            footer={<></>}
+        >
+            <UpdateForm product={selectedProduct} setShow={setShow} />
         </Modal>
     );
 
@@ -45,8 +88,28 @@ function App() {
         };
     }
 
+    const onSelect = (value: string) => {
+        console.log("onSelect", value);
+    };
+
     return (
         <div className="App">
+            <Row>
+                <AutoComplete
+                    dropdownMatchSelectWidth={252}
+                    style={{ width: 300 }}
+                    options={options}
+                    onSelect={onSelect}
+                    onSearch={onSearch}
+                >
+                    <Input.Search
+                        size="large"
+                        placeholder="input here"
+                        enterButton="Search"
+                        allowClear
+                    />
+                </AutoComplete>
+            </Row>
             <Row>
                 <div
                     style={{
@@ -96,11 +159,7 @@ function App() {
                                             </Text>
                                         )}
 
-                                        <Text>
-                                            {Number.parseInt(res.unit_price) *
-                                                1780}{" "}
-                                            MMK
-                                        </Text>
+                                        <Text>{res.unit_price} MMK</Text>
                                     </Row>
                                 </Column>
                             </Card>

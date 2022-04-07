@@ -1,9 +1,10 @@
 import React, { FormEvent } from "react";
-import { Button } from "react-bootstrap";
+import { Button, Input as AntInput } from "antd";
 import { productUpdate } from "./apis";
 import { Product } from "./models";
 import { Column, Input, Row, Text } from "./styled";
 import { useFormInput } from "./utils/hooks";
+import "./App.css";
 
 const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
     product,
@@ -35,7 +36,6 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
 
     return (
         <div style={{ width: "100%" }}>
-            <h4>Update</h4>
             <form onSubmit={(e: FormEvent) => updateProduct(e)}>
                 <Column>
                     <Text>SKU Number</Text>
@@ -102,10 +102,10 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
                         required
                     />
                     <Row justify="space-around">
-                        <Button variant="secondary" type="reset">
+                        <Button type="primary" htmlType="reset">
                             Reset
                         </Button>
-                        <Button variant="primary" type="submit">
+                        <Button type="primary" htmlType="submit">
                             Submit
                         </Button>
                     </Row>
