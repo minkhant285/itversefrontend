@@ -177,11 +177,11 @@ function App() {
                             >
                                 <Column>
                                     <img
-                                        src={res.picture}
+                                        src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
                                         width={150}
                                         height={150}
                                         className="image"
-                                        alt={res.picture}
+                                        alt={""}
                                         style={{
                                             objectFit: "contain",
                                             alignSelf: "center",
