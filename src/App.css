@@ -4,6 +4,7 @@
     right: 0;
     bottom: 0;
     position: absolute;
-    height: 100%;
     background-color: #dfdede;
+    overflow: hidden;
+    display: flex;
 }

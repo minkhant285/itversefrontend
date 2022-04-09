@@ -25,19 +25,16 @@ export function addProduct(product: ProductInput) {
         });
 }
 
-export function login(email: string, password: string) {
-    axios
+export async function login(email: string, password: string) {
+    const response = await axios
         .post(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/auth/login`, {
             email, password
-        })
-        .then(function (response) {
-            if (response.status === 201) {
-                const token = response.data;
-                console.log(token.access_token)
-                localStorage.setItem('accessToken', token.access_token);
-            }
-        })
-        .catch(function (error) {
-            console.log(error);
-        });
+        }).catch((err) => err.response.status);
+
+    if (response.status === 201) {
+        const token = response.data;
+        localStorage.setItem('accessToken', token.access_token);
+        return response.status
+    }
+    return response;
 }

@@ -10,11 +10,10 @@ function App() {
         <div className="App">
             <div
                 style={{
-                    height: "100vh",
-                    justifyContent: "center",
-                    alignItems: "center",
+                    // height: "100vh",
                     display: "flex",
                     flexDirection: "column",
+                    flex: 1,
                 }}
             >
                 <BrowserRouter>

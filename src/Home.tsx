@@ -5,16 +5,13 @@ import { Product } from "./models";
 import { Card, Column, ProductContainer, Row, Text, Tit } from "./styled";
 import UpdateForm from "./updateForm";
 import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
-
-// const { Search } = Input;
-
-let tempArr: Product[];
+import jwt_decode from "jwt-decode";
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
     const [totoalProducts, setTotalProducts] = useState<number>();
     const [selectedProduct, setSelectedProduct] = useState<Product>();
-    const [options, setOptions] = useState<SelectProps<object>["options"]>([]);
+    const [options, setOptions] = useState<any>([]);
     const [searchKey, setSearchKey] = useState<string>("");
     const [page, setPage] = useState<number>(1);
 
@@ -31,54 +28,21 @@ function Home() {
         getAllProducts(page).then((r) => {
             if (JSON.stringify(products) !== JSON.stringify(r)) {
                 setProducts(r);
-                tempArr = r;
             }
         });
-    }, [show, page, totoalProducts]);
+    }, [show, page, totoalProducts, products]);
 
-    function getRandomInt(max: number, min: number = 0) {
-        return Math.floor(Math.random() * (max - min + 1)) + min; // eslint-disable-line no-mixed-operators
-    }
-
-    // const searchResult = (query: string) =>
-    //     new Array(getRandomInt(5))
-    //         .join(".")
-    //         .split(".")
-    //         .map((_, idx) => {
-    //             const category = `${query}${idx}`;
-    //             return {
-    //                 value: category,
-    //                 label: (
-    //                     <div
-    //                         style={{
-    //                             display: "flex",
-    //                             justifyContent: "space-between",
-    //                         }}
-    //                     >
-    //                         <span>
-    //                             Found {query} on{" "}
-    //                             <a
-    //                                 href={`https://s.taobao.com/search?q=${query}`}
-    //                                 target="_blank"
-    //                                 rel="noopener noreferrer"
-    //                             >
-    //                                 {category}
-    //                             </a>
-    //                         </span>
-    //                         <span>{getRandomInt(200, 100)} results</span>
-    //                     </div>
-    //                 ),
-    //             };
-    //         });
-
-    const onSearch = (value: string) => {
-        if (value === "") {
-            setProducts(tempArr);
-            // console.log(tempArr);
-        }
-        setSearchKey(value);
-    };
-    // setOptions(value ? searchResult(value) : []);
+    // const onSearch = (value: string) => {
+    //     if (value === "") {
+    //         // getAllProducts(page).then((r) => {
+    //         //     console.log(r);
+    //         //     if (JSON.stringify(products) !== JSON.stringify(r)) {
+    //         //         setProducts(r);
+    //         //     }
+    //         // });
+    //     }
+    //     setSearchKey(value);
+    // };
 
     const ModalComp = () => (
         <Modal
@@ -109,181 +73,175 @@ function Home() {
         console.log("onSelect", value);
     };
 
-    async function serachProducts(e: React.KeyboardEvent<HTMLDivElement>) {
-        if (e.key === "Enter") {
-            setProducts(
-                await findProducts(
-                    searchKey
-                        .replace(/[^a-zA-Z0-9 ]/g, "")
-                        .trim()
-                        .split(" ")
-                        .filter((d) => d !== "")
-                        .join("&")
-                )
-            );
-        }
-    }
+    const searchResult = async (query: string) => {
+        setSearchKey(query);
+        const resultProduct: Product[] = await findProducts(
+            query
+                .replace(/[^a-zA-Z0-9 ]/g, "")
+                .trim()
+                .split(" ")
+                .filter((d) => d !== "")
+                .join("&")
+        );
+        return resultProduct.map((product) => {
+            return {
+                value: product.stock_id,
+                label: (
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                        }}
+                    >
+                        <img
+                            src={product.picture}
+                            width={80}
+                            height={80}
+                            alt={product.stock_id}
+                        />
+                        <span
+                            style={{
+                                marginLeft: "10px",
+                                display: "flex",
+                                flexDirection: "column",
+                            }}
+                        >
+                            <span>{product.item_name}</span>
+                            <span>{product.unit_price} MMK</span>
+                            <span style={{ fontWeight: "bold" }}>
+                                "{query}"
+                            </span>
+                        </span>
+                    </div>
+                ),
+            };
+        });
+    };
+
+    const handleSearch = async (value: any) => {
+        setOptions(value ? await searchResult(value) : []);
+    };
 
     return (
-        <div className="App">
-            <Column flex={1} height="100%">
+        <div
+            style={{
+                flex: 1,
+                flexDirection: "column",
+                display: "flex",
+                overflow: "auto",
+            }}
+        >
+            <div>
                 <Row align="center" spacing="0px 10px" bgcolor="#fff">
                     <span style={{ fontWeight: "bold", fontSize: 18 }}>
                         ITVerse
                     </span>
                     <AutoComplete
                         dropdownMatchSelectWidth={252}
-                        style={{ width: 300 }}
+                        style={{ width: 500 }}
                         options={options}
                         onSelect={onSelect}
-                        onSearch={onSearch}
-                        onClear={() => console.log("clear")}
-                        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) =>
-                            serachProducts(e)
-                        }
+                        onSearch={handleSearch}
                     >
                         <Input.Search
                             value={searchKey}
                             size="large"
                             placeholder={totoalProducts?.toString()}
-                            enterButton="Search"
-                            onSearch={async () =>
-                                setProducts(
-                                    await findProducts(
-                                        searchKey
-                                            .replace(/[^a-zA-Z0-9 ]/g, "")
-                                            .trim()
-                                            .split(" ")
-                                            .filter((d) => d !== "")
-                                            .join("&")
-                                    )
-                                )
-                            }
                             allowClear
                         />
                     </AutoComplete>
                 </Row>
-                <Row>
-                    <ProductContainer>
-                        {products?.map((res) => (
-                            <Card
-                                key={res.stock_id}
-                                onClick={() => {
-                                    JSON.stringify(selectedProduct) !==
-                                        JSON.stringify(res) &&
-                                        setSelectedProduct(res);
-                                    handleShow();
-                                }}
-                            >
-                                <Column>
-                                    <img
-                                        src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
-                                        width={150}
-                                        height={150}
-                                        className="image"
-                                        alt={""}
-                                        style={{
-                                            objectFit: "contain",
-                                            alignSelf: "center",
-                                        }}
-                                    />
+            </div>
+            <div
+                style={{
+                    flex: 1,
+                    overflow: "auto",
+                    padding: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                }}
+            >
+                <ProductContainer>
+                    {products?.map((res) => (
+                        <Card
+                            key={res.stock_id}
+                            onClick={() => {
+                                let userData: any = jwt_decode(
+                                    localStorage.getItem("accessToken") || ""
+                                );
 
-                                    <Text>{res.item_name}</Text>
+                                if (userData.role === "admin") {
+                                    if (
+                                        (new Date(userData.exp * 1000) >
+                                            new Date(),
+                                        new Date(
+                                            userData.exp * 1000
+                                        ).toLocaleString())
+                                    ) {
+                                        console.log("token expired");
+                                        // JSON.stringify(selectedProduct) !==
+                                        //     JSON.stringify(res) &&
+                                        //     setSelectedProduct(res);
+                                        // handleShow();
+                                    }
+                                } else {
+                                    console.log("Admin permission required");
+                                }
+                            }}
+                        >
+                            <Column>
+                                <img
+                                    src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
+                                    width={150}
+                                    height={150}
+                                    className="image"
+                                    alt={""}
+                                    style={{
+                                        objectFit: "contain",
+                                        alignSelf: "center",
+                                    }}
+                                />
 
-                                    <Row
-                                        justify="space-between"
-                                        padding="10px 0px 10px 0px"
-                                    >
-                                        {res.unit_in_stock > 0 ? (
-                                            <Text color="green">In Stock</Text>
-                                        ) : (
-                                            <Text color="red">
-                                                Out of Stock
-                                            </Text>
-                                        )}
+                                <Text>{res.item_name}</Text>
 
-                                        <Text>{res.unit_price} MMK</Text>
-                                    </Row>
-                                </Column>
-                            </Card>
-                        ))}
-                    </ProductContainer>
-                    <ModalComp />
-                </Row>
-                <Row flex={1} justify="center">
-                    <Button
-                        onClick={() => {
-                            getAllProducts(1).then((r) => {
-                                if (
-                                    JSON.stringify(products) !==
-                                    JSON.stringify(r)
-                                ) {
-                                    setProducts(r);
-                                }
-                            });
-                        }}
-                    >
-                        page 1
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            getAllProducts(2).then((r) => {
-                                if (
-                                    JSON.stringify(products) !==
-                                    JSON.stringify(r)
-                                ) {
-                                    setProducts(r);
-                                }
-                            });
-                        }}
-                    >
-                        page 2
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            getAllProducts(3).then((r) => {
-                                console.log(r);
-                                if (
-                                    JSON.stringify(products) !==
-                                    JSON.stringify(r)
-                                ) {
-                                    setProducts(r);
-                                }
-                            });
-                        }}
-                    >
-                        page 3
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            getAllProducts(4).then((r) => {
-                                if (
-                                    JSON.stringify(products) !==
-                                    JSON.stringify(r)
-                                ) {
-                                    setProducts(r);
-                                }
-                            });
-                        }}
-                    >
-                        page 4
-                    </Button>
-                    <Button
-                        onClick={() => {
-                            getAllProducts(5).then((r) => {
-                                if (
-                                    JSON.stringify(products) !==
-                                    JSON.stringify(r)
-                                ) {
-                                    setProducts(r);
-                                }
-                            });
-                        }}
-                    >
-                        page 5
-                    </Button>
-                </Row>
-            </Column>
+                                <Row
+                                    justify="space-between"
+                                    padding="10px 0px 10px 0px"
+                                >
+                                    {res.unit_in_stock > 0 ? (
+                                        <Text color="green">In Stock</Text>
+                                    ) : (
+                                        <Text color="red">Out of Stock</Text>
+                                    )}
+
+                                    <Text>{res.unit_price} MMK</Text>
+                                </Row>
+                            </Column>
+                        </Card>
+                    ))}
+                </ProductContainer>
+                <ModalComp />
+                <div
+                    style={{
+                        flexDirection: "row",
+                        display: "flex",
+                        alignSelf: "center",
+                        marginTop: "10px",
+                    }}
+                >
+                    {[1, 2, 3, 4, 5].map((val: number) => (
+                        <Button
+                            onClick={() => {
+                                setPage(val);
+                            }}
+                            type={val === page ? "primary" : "default"}
+                        >
+                            page {val}
+                        </Button>
+                    ))}
+                </div>
+            </div>
         </div>
     );
 }

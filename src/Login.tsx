@@ -1,13 +1,23 @@
 import { Button, Form, Input } from "antd";
 import Checkbox from "antd/lib/checkbox/Checkbox";
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { login } from "./apis";
+import { Text } from "./styled";
 
 const Login = () => {
-    const onFinish = (values: any) => {
-        login(values.email, values.password);
+    const navigate = useNavigate();
+    const [loginStatus, setLoginStatus] = useState<number>();
 
-        console.log("Success:", values);
+    const onFinish = async (values: any) => {
+        const statusInfo = await login(values.email, values.password);
+        console.log(statusInfo);
+        if (statusInfo === 201) {
+            setLoginStatus(statusInfo);
+            navigate("/");
+        } else if (statusInfo === 401) {
+            setLoginStatus(statusInfo);
+        }
     };
 
     const onFinishFailed = (errorInfo: any) => {
@@ -57,6 +67,14 @@ const Login = () => {
                     Submit
                 </Button>
             </Form.Item>
+            {loginStatus && (
+                <Text color={loginStatus === 401 ? "red" : "green"}>
+                    {" "}
+                    {loginStatus === 401
+                        ? "Login Failed! Try Again"
+                        : " Login Success! "}
+                </Text>
+            )}
         </Form>
     );
 };

@@ -1,8 +1,8 @@
 import axios from "axios";
+import { Product } from "../models";
 const endpointUrl = "products";
 
 export async function getAllProducts(page: number) {
-    console.log(await localStorage.getItem('accessToken'));
     const response = await axios
         .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/page/${page}`,
             {
@@ -22,7 +22,7 @@ export async function countAllProducts() {
     return response.data;
 }
 
-export async function findProducts(searchKey: string) {
+export async function findProducts(searchKey: string): Promise<Product[]> {
     const response = await axios
         .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/search/${searchKey}`);
     return response.data;
