@@ -1,6 +1,6 @@
 import React, { FormEvent } from "react";
 import { Button, Input as AntInput } from "antd";
-import { productUpdate } from "./apis";
+import { deleteProduct, productUpdate } from "./apis";
 import { Product } from "./models";
 import { Column, Input, Row, Text } from "./styled";
 import { useFormInput } from "./utils/hooks";
@@ -104,6 +104,12 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
                     <Row justify="space-around">
                         <Button type="primary" htmlType="reset">
                             Reset
+                        </Button>
+                        <Button
+                            type="primary"
+                            onClick={() => deleteProduct(product?.stock_id)}
+                        >
+                            Delete
                         </Button>
                         <Button type="primary" htmlType="submit">
                             Submit

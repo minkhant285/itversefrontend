@@ -6,6 +6,7 @@ interface RowProps {
     bgcolor?: string | undefined;
     flex?: number;
     height?: string | undefined;
+    width?: string | undefined;
     align?: string | undefined;
     spacing?: string | undefined;
 }
@@ -29,6 +30,7 @@ export const Column = styled.div<RowProps>`
     flex-direction: column;
     flex: ${(props) => props.flex && props.flex};
     height: ${(props) => props.height};
+    width: ${(props) => props.width};
     background-color: ${(props) => props.bgcolor && props.bgcolor};
     justify-content: ${(props: RowProps) => props.justify};
     align-items: ${(props: RowProps) => props.align};

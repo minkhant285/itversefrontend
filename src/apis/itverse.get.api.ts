@@ -2,8 +2,15 @@ import axios from "axios";
 const endpointUrl = "products";
 
 export async function getAllProducts(page: number) {
+    console.log(await localStorage.getItem('accessToken'));
     const response = await axios
-        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/page/${page}`);
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/page/${page}`,
+            {
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('accessToken')
+                }
+
+            });
     return response.data;
 }
 

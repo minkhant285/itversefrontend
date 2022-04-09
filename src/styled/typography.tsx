@@ -1,5 +1,7 @@
+import { Typography } from "antd";
 import styled from "styled-components";
 
+const { Title } = Typography;
 interface TitleProps {
     size?: string | number | undefined;
 }
@@ -8,7 +10,7 @@ interface TextProps {
     color?: string | undefined;
 }
 
-export const Title = styled.span<TitleProps>`
+export const Tit = styled(Title)<TitleProps>`
     font-size: ${(props: TitleProps) => (props.size ? props.size : "small")};
     font-weight: bold;
     text-align: left;
