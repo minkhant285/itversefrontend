@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
-import { countAllProducts, findProducts, getAllProducts } from "./apis";
+import { countAllProducts, getAllProducts } from "./apis";
 import { Product } from "./models";
-import { Card, Column, ProductContainer, Row, Text, Tit } from "./styled";
+import { Card, Column, ProductContainer, Row, Text } from "./styled";
 import UpdateForm from "./updateForm";
-import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
-import jwt_decode from "jwt-decode";
-import { Route, Routes, useNavigate } from "react-router-dom";
-import ProductDetail from "./ProductDetail";
+import { Button, Input, Modal } from "antd";
+import { useNavigate } from "react-router-dom";
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
     const [totoalProducts, setTotalProducts] = useState<number>();
     const [selectedProduct, setSelectedProduct] = useState<Product>();
-    const [options, setOptions] = useState<any>([]);
-    const [searchKey, setSearchKey] = useState<string>("");
     const [page, setPage] = useState<number>(1);
 
     const [show, setShow] = useState(false);
@@ -24,7 +20,7 @@ function Home() {
     const handleShow = () => setShow(true);
 
     useEffect(() => {
-        console.log("effect called");
+        // console.log("effect called");
         countAllProducts().then((r) => {
             setTotalProducts(r);
         });
@@ -34,18 +30,6 @@ function Home() {
             }
         });
     }, [show, page, totoalProducts, products]);
-
-    // const onSearch = (value: string) => {
-    //     if (value === "") {
-    //         // getAllProducts(page).then((r) => {
-    //         //     console.log(r);
-    //         //     if (JSON.stringify(products) !== JSON.stringify(r)) {
-    //         //         setProducts(r);
-    //         //     }
-    //         // });
-    //     }
-    //     setSearchKey(value);
-    // };
 
     const ModalComp = () => (
         <Modal
@@ -72,60 +56,6 @@ function Home() {
         };
     }
 
-    const onSelect = (value: string) => {
-        navigate(`/product/?pid=${value}`);
-    };
-
-    const searchResult = async (query: string) => {
-        setSearchKey(query);
-        const resultProduct: Product[] = await findProducts(
-            query
-                .replace(/[^a-zA-Z0-9 ]/g, "")
-                .trim()
-                .split(" ")
-                .filter((d) => d !== "")
-                .join("&")
-        );
-        return resultProduct.map((product) => {
-            return {
-                value: product.stock_id,
-                label: (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                        }}
-                    >
-                        <img
-                            src={product.picture}
-                            width={80}
-                            height={80}
-                            alt={product.stock_id}
-                        />
-                        <span
-                            style={{
-                                marginLeft: "10px",
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <span>{product.item_name}</span>
-                            <span>{product.unit_price} MMK</span>
-                            <span style={{ fontWeight: "bold" }}>
-                                "{query}"
-                            </span>
-                        </span>
-                    </div>
-                ),
-            };
-        });
-    };
-
-    const handleSearch = async (value: any) => {
-        setOptions(value ? await searchResult(value) : []);
-    };
-
     return (
         <div
             style={{
@@ -135,27 +65,6 @@ function Home() {
                 overflow: "auto",
             }}
         >
-            <div>
-                <Row align="center" spacing="0px 10px" bgcolor="#fff">
-                    <span style={{ fontWeight: "bold", fontSize: 18 }}>
-                        ITVerse
-                    </span>
-                    <AutoComplete
-                        dropdownMatchSelectWidth={252}
-                        style={{ width: 500 }}
-                        options={options}
-                        onSelect={onSelect}
-                        onSearch={handleSearch}
-                    >
-                        <Input.Search
-                            value={searchKey}
-                            size="large"
-                            placeholder={totoalProducts?.toString()}
-                            allowClear
-                        />
-                    </AutoComplete>
-                </Row>
-            </div>
             <div
                 style={{
                     flex: 1,

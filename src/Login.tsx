@@ -11,7 +11,7 @@ const Login = () => {
 
     const onFinish = async (values: any) => {
         const statusInfo = await login(values.email, values.password);
-        console.log(statusInfo);
+        // console.log(statusInfo);
         if (statusInfo === 201) {
             setLoginStatus(statusInfo);
             navigate("/");
@@ -21,7 +21,7 @@ const Login = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log("Failed:", errorInfo);
+        // console.log("Failed:", errorInfo);
     };
 
     return (

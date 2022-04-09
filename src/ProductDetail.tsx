@@ -23,6 +23,7 @@ const ProductDetail: React.FC = () => {
                 display: "flex",
                 flexDirection: "row",
                 flex: 1,
+                padding: "10px",
             }}
         >
             <img
