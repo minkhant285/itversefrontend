@@ -6,6 +6,8 @@ import { Card, Column, ProductContainer, Row, Text, Tit } from "./styled";
 import UpdateForm from "./updateForm";
 import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
 import jwt_decode from "jwt-decode";
+import { Route, Routes, useNavigate } from "react-router-dom";
+import ProductDetail from "./ProductDetail";
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
@@ -16,6 +18,7 @@ function Home() {
     const [page, setPage] = useState<number>(1);
 
     const [show, setShow] = useState(false);
+    const navigate = useNavigate();
 
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
@@ -70,7 +73,7 @@ function Home() {
     }
 
     const onSelect = (value: string) => {
-        console.log("onSelect", value);
+        navigate(`/product/?pid=${value}`);
     };
 
     const searchResult = async (query: string) => {
@@ -167,27 +170,28 @@ function Home() {
                         <Card
                             key={res.stock_id}
                             onClick={() => {
-                                let userData: any = jwt_decode(
-                                    localStorage.getItem("accessToken") || ""
-                                );
+                                navigate(`/product/?pid=${res.stock_id}`);
+                                // let userData: any = jwt_decode(
+                                //     localStorage.getItem("accessToken") || ""
+                                // );
 
-                                if (userData.role === "admin") {
-                                    if (
-                                        (new Date(userData.exp * 1000) >
-                                            new Date(),
-                                        new Date(
-                                            userData.exp * 1000
-                                        ).toLocaleString())
-                                    ) {
-                                        console.log("token expired");
-                                        // JSON.stringify(selectedProduct) !==
-                                        //     JSON.stringify(res) &&
-                                        //     setSelectedProduct(res);
-                                        // handleShow();
-                                    }
-                                } else {
-                                    console.log("Admin permission required");
-                                }
+                                // if (userData.role === "admin") {
+                                //     if (
+                                //         (new Date(userData.exp * 1000) >
+                                //             new Date(),
+                                //         new Date(
+                                //             userData.exp * 1000
+                                //         ).toLocaleString())
+                                //     ) {
+                                //         console.log("token expired");
+                                //         // JSON.stringify(selectedProduct) !==
+                                //         //     JSON.stringify(res) &&
+                                //         //     setSelectedProduct(res);
+                                //         // handleShow();
+                                //     }
+                                // } else {
+                                //     console.log("Admin permission required");
+                                // }
                             }}
                         >
                             <Column>

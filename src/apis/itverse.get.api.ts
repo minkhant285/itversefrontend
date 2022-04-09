@@ -27,3 +27,9 @@ export async function findProducts(searchKey: string): Promise<Product[]> {
         .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/search/${searchKey}`);
     return response.data;
 }
+
+export async function getProductById(pid: string): Promise<Product> {
+    const response = await axios
+        .get(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/${pid}`);
+    return response.data;
+}
