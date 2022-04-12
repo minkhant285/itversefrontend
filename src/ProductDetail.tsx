@@ -42,7 +42,7 @@ const ProductDetail: React.FC = () => {
                 <span>{product?.item_name}</span>
                 <span> Price : {product?.unit_price} MMK</span>
                 <span> Stock : {product?.unit_in_stock} </span>
-                <span> Specification : {product?.sku} </span>
+                <span> Description : {product?.description} </span>
                 {localStorage.getItem("accessToken") && (
                     <span> Buy Price : {product?.buy_price} USD </span>
                 )}
