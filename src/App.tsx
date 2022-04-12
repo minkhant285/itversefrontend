@@ -14,10 +14,14 @@ import ProductDetail from "./ProductDetail";
 import { AutoComplete, Button, Input, Modal, SelectProps } from "antd";
 import { findProducts } from "./apis";
 import { Product } from "./models";
+import { SearchOutlined } from "@ant-design/icons";
+import useWindowDimensions from "./hooks/useDimenstion";
 
 function App() {
     const [options, setOptions] = useState<any>([]);
     const [searchKey, setSearchKey] = useState<string>("");
+    const [searchFocus, setFocus] = useState<boolean>(false);
+    const { height, width } = useWindowDimensions();
 
     const onSelect = (value: string) => {
         window.location.href = `/product/?pid=${value}`;
@@ -85,24 +89,82 @@ function App() {
             >
                 <BrowserRouter>
                     <div>
-                        <Row align="center" spacing="0px 10px" bgcolor="#fff">
-                            <span style={{ fontWeight: "bold", fontSize: 18 }}>
-                                ITVerse
-                            </span>
-                            <AutoComplete
-                                dropdownMatchSelectWidth={252}
-                                style={{ width: 500 }}
-                                options={options}
-                                onSelect={onSelect}
-                                onSearch={handleSearch}
-                            >
-                                <Input.Search
-                                    value={searchKey}
-                                    size="large"
-                                    placeholder={"Search Item......."}
-                                    allowClear
+                        <Row
+                            align="center"
+                            justify="space-between"
+                            bgcolor="#fff"
+                        >
+                            {(() => {
+                                if (searchFocus && width < 400) {
+                                    return <></>;
+                                } else if (searchFocus && width > 400) {
+                                    return (
+                                        <span
+                                            style={{
+                                                fontWeight: "bold",
+                                                fontSize: 16,
+                                            }}
+                                        >
+                                            ITVerse
+                                        </span>
+                                    );
+                                } else if (!searchFocus) {
+                                    return (
+                                        <span
+                                            style={{
+                                                fontWeight: "bold",
+                                                fontSize: 16,
+                                            }}
+                                        >
+                                            ITVerse
+                                        </span>
+                                    );
+                                }
+                            })()}
+
+                            {!searchFocus && (
+                                <Button
+                                    type="primary"
+                                    shape="circle"
+                                    icon={<SearchOutlined />}
+                                    onClick={() => setFocus(true)}
                                 />
-                            </AutoComplete>
+                            )}
+                            {searchFocus && (
+                                <AutoComplete
+                                    dropdownMatchSelectWidth={true}
+                                    style={{
+                                        width: (() => {
+                                            if (width > 700 && width < 900) {
+                                                return "60%";
+                                            } else if (
+                                                width > 630 &&
+                                                width < 700
+                                            ) {
+                                                return "70%";
+                                            } else if (width < 630) {
+                                                return "95%";
+                                            } else {
+                                                return "40%";
+                                            }
+                                        })(),
+                                        alignSelf: "flex-end",
+                                    }}
+                                    options={options}
+                                    onSelect={onSelect}
+                                    onSearch={handleSearch}
+                                    autoFocus
+                                >
+                                    <Input.Search
+                                        onFocus={() => setFocus(true)}
+                                        onBlur={() => setFocus(false)}
+                                        value={searchKey}
+                                        size="large"
+                                        placeholder={"Search Item......."}
+                                        allowClear
+                                    />
+                                </AutoComplete>
+                            )}
                         </Row>
                     </div>
                     <Routes>

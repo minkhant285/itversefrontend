@@ -1,3 +1,4 @@
+import { AutoComplete } from "antd";
 import styled from "styled-components";
 
 interface RowProps {
@@ -42,9 +43,8 @@ export const Card = styled.div`
     background-color: #fff;
     transition: 0.3s;
     padding: 2px;
-    height: 250px;
-    margin-left: 10px;
-    margin-right: 5px;
+    /* height: 250px; */
+    width: 100%;
     border-radius: 10px;
     cursor: pointer;
     :hover {
@@ -52,13 +52,38 @@ export const Card = styled.div`
     }
 `;
 
+export const ProductWrapper = styled.div`
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+`;
+
 export const ProductContainer = styled.div`
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     align-content: center;
-    row-gap: 20px;
+    row-gap: 10px;
+    column-gap: 13px;
+    width: 100%;
+    padding: 8px;
 
-    @media (max-width: 768px) {
+    @media (min-width: 650px) and (max-width: 900px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    @media (max-width: 650px) {
         grid-template-columns: repeat(2, 1fr);
+        width: 100%;
+    }
+`;
+
+export const StyledAutoComplete = styled(AutoComplete)`
+    width: 50%;
+
+    @media (min-width: 650px) and (max-width: 900px) {
+    }
+
+    @media (max-width: 650px) {
     }
 `;

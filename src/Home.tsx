@@ -2,9 +2,16 @@ import React, { useEffect, useState } from "react";
 import "./App.css";
 import { countAllProducts, getAllProducts } from "./apis";
 import { Product } from "./models";
-import { Card, Column, ProductContainer, Row, Text } from "./styled";
+import {
+    Card,
+    Column,
+    ProductContainer,
+    ProductWrapper,
+    Row,
+    Text,
+} from "./styled";
 import UpdateForm from "./updateForm";
-import { Button, Input, Modal } from "antd";
+import { Button, Input, Modal, Pagination } from "antd";
 import { useNavigate } from "react-router-dom";
 
 function Home() {
@@ -65,15 +72,7 @@ function Home() {
                 overflow: "auto",
             }}
         >
-            <div
-                style={{
-                    flex: 1,
-                    overflow: "auto",
-                    padding: "10px",
-                    display: "flex",
-                    flexDirection: "column",
-                }}
-            >
+            <ProductWrapper>
                 <ProductContainer>
                     {products?.map((res) => (
                         <Card
@@ -106,9 +105,8 @@ function Home() {
                             <Column>
                                 <img
                                     src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
-                                    width={150}
+                                    width={130}
                                     height={150}
-                                    className="image"
                                     alt={""}
                                     style={{
                                         objectFit: "contain",
@@ -135,26 +133,30 @@ function Home() {
                     ))}
                 </ProductContainer>
                 <ModalComp />
-                <div
-                    style={{
-                        flexDirection: "row",
-                        display: "flex",
-                        alignSelf: "center",
-                        marginTop: "10px",
-                    }}
-                >
-                    {[1, 2, 3, 4, 5].map((val: number) => (
-                        <Button
-                            onClick={() => {
-                                setPage(val);
-                            }}
-                            type={val === page ? "primary" : "default"}
-                        >
-                            page {val}
-                        </Button>
-                    ))}
-                </div>
-            </div>
+
+                {products && (
+                    <div
+                        style={{
+                            flexDirection: "row",
+                            display: "flex",
+                            alignSelf: "center",
+                            margin: "10px 0px",
+                        }}
+                    >
+                        {[1, 2, 3, 4, 5].map((val: number) => (
+                            <Button
+                                size="small"
+                                onClick={() => {
+                                    setPage(val);
+                                }}
+                                type={val === page ? "primary" : "default"}
+                            >
+                                page {val}
+                            </Button>
+                        ))}
+                    </div>
+                )}
+            </ProductWrapper>
         </div>
     );
 }
