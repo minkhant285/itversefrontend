@@ -6,6 +6,7 @@ export interface ProductInput {
     buy_price: number;
     category_id: number;
     picture: string;
+    description: string;
 }
 
 export interface Product extends ProductInput {

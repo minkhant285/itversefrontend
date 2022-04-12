@@ -12,6 +12,7 @@ export function addProduct(product: ProductInput) {
             buy_price: product.buy_price,
             category_id: product.category_id,
             picture: product.picture,
+            description: product.description
         }, {
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('accessToken')

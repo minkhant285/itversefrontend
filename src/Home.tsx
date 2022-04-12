@@ -12,14 +12,8 @@ import {
     Text,
 } from "./styled";
 import UpdateForm from "./updateForm";
-import { Button, Input, Modal, Pagination, Spin } from "antd";
-import {
-    Navigate,
-    useNavigate,
-    useParams,
-    useSearchParams,
-} from "react-router-dom";
-import ClampLines from "react-clamp-lines";
+import { Button, Modal, Spin } from "antd";
+import { useNavigate, useParams } from "react-router-dom";
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
@@ -29,38 +23,19 @@ function Home() {
     const [page, setPage] = useState<number>(
         Number.parseInt(param.pnum || "1") || 1
     );
-
-    const [show, setShow] = useState(false);
     const navigate = useNavigate();
 
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
     useEffect(() => {
-        // console.log("effect called");
         countAllProducts().then((r) => {
             setTotalProducts(r);
         });
+        window.scrollTo(0, 0);
         getAllProducts(page).then((r) => {
             if (JSON.stringify(products) !== JSON.stringify(r)) {
                 setProducts(r);
             }
         });
-    }, [show, page, totoalProducts, products]);
-
-    const ModalComp = () => (
-        <Modal
-            centered
-            title="Update Product"
-            style={{ height: "fit-content" }}
-            visible={show}
-            onOk={handleClose}
-            onCancel={handleClose}
-            footer={<></>}
-        >
-            <UpdateForm product={selectedProduct} setShow={setShow} />
-        </Modal>
-    );
+    }, [page, totoalProducts, products]);
 
     function range(range: number | undefined) {
         return [...Array(range).keys()].map((res) => res + 1);
@@ -107,27 +82,6 @@ function Home() {
                                 key={res.stock_id}
                                 onClick={() => {
                                     navigate(`/product/?pid=${res.stock_id}`);
-                                    // let userData: any = jwt_decode(
-                                    //     localStorage.getItem("accessToken") || ""
-                                    // );
-
-                                    // if (userData.role === "admin") {
-                                    //     if (
-                                    //         (new Date(userData.exp * 1000) >
-                                    //             new Date(),
-                                    //         new Date(
-                                    //             userData.exp * 1000
-                                    //         ).toLocaleString())
-                                    //     ) {
-                                    //         console.log("token expired");
-                                    //         // JSON.stringify(selectedProduct) !==
-                                    //         //     JSON.stringify(res) &&
-                                    //         //     setSelectedProduct(res);
-                                    //         // handleShow();
-                                    //     }
-                                    // } else {
-                                    //     console.log("Admin permission required");
-                                    // }
                                 }}
                             >
                                 <Column style={{ padding: "5px" }}>
@@ -184,7 +138,6 @@ function Home() {
                             </Card>
                         ))}
                     </ProductContainer>
-                    <ModalComp />
 
                     {products && (
                         <Row flex={1} spacing="2px" justify="center">

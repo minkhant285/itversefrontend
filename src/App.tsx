@@ -18,6 +18,7 @@ import { Product } from "./models";
 import { SearchOutlined } from "@ant-design/icons";
 import useWindowDimensions from "./hooks/useDimenstion";
 import ClampLines from "react-clamp-lines";
+import Dashboard from "./admin/Dashboard";
 
 function App() {
     const [options, setOptions] = useState<any>([]);
@@ -133,7 +134,7 @@ function App() {
                                             <span
                                                 style={{
                                                     fontWeight: "bold",
-                                                    fontSize: 16,
+                                                    fontSize: 18,
                                                 }}
                                             >
                                                 <img
@@ -224,6 +225,7 @@ function App() {
                         <Route path="/" element={<Navigate to={"/page/1"} />} />
                         <Route path="product" element={<ProductDetail />} />
                         <Route path="login" element={<Login />} />
+                        <Route path="dashboard" element={<Dashboard />} />
                     </Routes>
                 </BrowserRouter>
             </div>

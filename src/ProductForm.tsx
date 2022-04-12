@@ -1,8 +1,10 @@
+import { Input } from "antd";
+import TextArea from "antd/lib/input/TextArea";
 import React, { FormEvent, useEffect, useLayoutEffect } from "react";
 import { productUpdate } from "./apis";
 import { addProduct } from "./apis/itverse.post.api";
 import { Product } from "./models";
-import { Column, Input, Row, Text } from "./styled";
+import { Column, Row, Text } from "./styled";
 import { useFormInput } from "./utils/hooks";
 
 const ProductForm: React.FC = () => {
@@ -10,7 +12,6 @@ const ProductForm: React.FC = () => {
 
     const addNewProduct = (e: FormEvent) => {
         e.preventDefault();
-        // console.log(values);
         addProduct({
             sku: values.sku,
             buy_price: values.buy_price,
@@ -19,6 +20,7 @@ const ProductForm: React.FC = () => {
             picture: values.photo_url,
             unit_in_stock: values.quantity,
             unit_price: values.unit_price,
+            description: values.description,
         });
     };
 
@@ -87,6 +89,15 @@ const ProductForm: React.FC = () => {
                         placeholder="Photo URL"
                         onChange={handleFormInputChange}
                         name="photo_url"
+                        required
+                    />
+                    <Text>Specifications</Text>
+                    <TextArea
+                        rows={5}
+                        value={values.description}
+                        placeholder="Specifications"
+                        onChange={handleFormInputChange}
+                        name="description"
                         required
                     />
                     <Row justify="space-between">

@@ -1,15 +1,18 @@
 import React, { FormEvent } from "react";
-import { Button, Input as AntInput } from "antd";
+import { Button, Input } from "antd";
 import { deleteProduct, productUpdate } from "./apis";
 import { Product } from "./models";
-import { Column, Input, Row, Text } from "./styled";
+import { Column, Row, Text } from "./styled";
 import { useFormInput } from "./utils/hooks";
 import "./App.css";
+import { useNavigate } from "react-router-dom";
+import TextArea from "antd/lib/input/TextArea";
 
 const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
     product,
     setShow,
 }) => {
+    const navigate = useNavigate();
     const { values, handleFormInputChange } = useFormInput({
         sku: product?.sku,
         buy_price: product?.buy_price,
@@ -18,6 +21,7 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
         picture: product?.picture,
         unit_in_stock: product?.unit_in_stock,
         unit_price: product?.unit_price,
+        description: product?.description,
     });
 
     const updateProduct = (e: FormEvent) => {
@@ -25,11 +29,12 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
         productUpdate(product?.stock_id, {
             sku: values.sku,
             buy_price: values.buy_price,
-            category_id: values.category,
-            item_name: values.title,
+            category_id: values.category_id,
+            item_name: values.item_name,
             picture: values.picture,
-            unit_in_stock: values.quantity,
+            unit_in_stock: values.unit_in_stock,
             unit_price: values.unit_price,
+            description: values.description,
         });
         setShow(false);
     };
@@ -101,13 +106,26 @@ const UpdateForm: React.FC<{ product?: Product; setShow: Function }> = ({
                         name="picture"
                         required
                     />
+                    <Text>Specifications</Text>
+                    <TextArea
+                        rows={5}
+                        value={values.description}
+                        placeholder="Specifications"
+                        onChange={handleFormInputChange}
+                        name="description"
+                        required
+                    />
                     <Row justify="space-around">
-                        <Button type="primary" htmlType="reset">
+                        <Button type="default" htmlType="reset">
                             Reset
                         </Button>
                         <Button
                             type="primary"
-                            onClick={() => deleteProduct(product?.stock_id)}
+                            style={{ backgroundColor: "red" }}
+                            onClick={() => {
+                                deleteProduct(product?.stock_id);
+                                navigate(`/page/${1}`);
+                            }}
                         >
                             Delete
                         </Button>
