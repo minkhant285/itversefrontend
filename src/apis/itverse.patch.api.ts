@@ -6,7 +6,6 @@ export function productUpdate(
     product_id: string | undefined,
     product: ProductInput
 ) {
-    console.log(product)
     axios
         .patch(`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${endpointUrl}/${product_id}`, {
             sku: product.sku,
