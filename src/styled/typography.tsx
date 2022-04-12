@@ -1,4 +1,5 @@
 import { Typography } from "antd";
+import ClampLines from "react-clamp-lines";
 import styled from "styled-components";
 
 const { Title } = Typography;
@@ -17,6 +18,13 @@ export const Tit = styled(Title)<TitleProps>`
 `;
 
 export const Text = styled.span<TextProps>`
+    font-size: small;
+    font-weight: bold;
+    text-align: left;
+    color: ${(props: TextProps) => props.color && props.color};
+`;
+
+export const ClampText = styled(ClampLines)<{ color?: string }>`
     font-size: small;
     font-weight: bold;
     text-align: left;

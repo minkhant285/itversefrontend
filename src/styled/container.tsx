@@ -67,7 +67,7 @@ export const ProductContainer = styled.div`
     column-gap: 13px;
     width: 100%;
     padding: 8px;
-
+    position: relative;
     @media (min-width: 650px) and (max-width: 900px) {
         grid-template-columns: repeat(3, 1fr);
     }
