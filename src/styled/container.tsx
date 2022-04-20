@@ -87,3 +87,14 @@ export const StyledAutoComplete = styled(AutoComplete)`
     @media (max-width: 650px) {
     }
 `;
+
+export const StyledHeader = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #fff;
+    height: 70px;
+    padding: 10px;
+    box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
+`;

@@ -14,6 +14,8 @@ import {
 import UpdateForm from "./updateForm";
 import { Button, Modal, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
+import { range } from "./utils/Range";
+import { sortItems } from "./utils/sortAz";
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
@@ -36,21 +38,6 @@ function Home() {
             }
         });
     }, [page, totoalProducts, products]);
-
-    function range(range: number | undefined) {
-        return [...Array(range).keys()].map((res) => res + 1);
-    }
-
-    function GetSortOrder(prop: string) {
-        return function (a: any, b: any) {
-            if (a[prop] > b[prop]) {
-                return 1;
-            } else if (a[prop] < b[prop]) {
-                return -1;
-            }
-            return 0;
-        };
-    }
 
     return (
         <div
@@ -77,7 +64,7 @@ function Home() {
             ) : (
                 <ProductWrapper>
                     <ProductContainer>
-                        {products?.map((res) => (
+                        {products?.sort(sortItems).map((res) => (
                             <Card
                                 key={res.stock_id}
                                 onClick={() => {
@@ -141,7 +128,7 @@ function Home() {
 
                     {products && (
                         <Row flex={1} spacing="2px" justify="center">
-                            {range(Math.ceil(totoalProducts / 40)).map(
+                            {range(Math.ceil(totoalProducts / 30)).map(
                                 (val: number) => (
                                     <Button
                                         key={val}
