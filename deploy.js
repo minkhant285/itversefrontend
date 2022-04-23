@@ -10,4 +10,4 @@ app.get('/*', function (req, res) {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
 });
 
-app.listen(port, () => console.log(`App is live on port ${port}!`))
+app.listen(port, () => console.log(`App is live on port : ${port}!`))
