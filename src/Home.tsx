@@ -6,16 +6,18 @@ import {
     Card,
     ClampText,
     Column,
+    HomeContainer,
     ProductContainer,
     ProductWrapper,
     Row,
     Text,
 } from "./styled";
-import UpdateForm from "./updateForm";
 import { Button, Modal, Spin } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import { range } from "./utils/Range";
 import { sortItems } from "./utils/sortAz";
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+
 
 function Home() {
     const [products, setProducts] = useState<Product[]>();
@@ -40,14 +42,7 @@ function Home() {
     }, [page, totoalProducts, products]);
 
     return (
-        <div
-            style={{
-                flex: 1,
-                flexDirection: "column",
-                display: "flex",
-                overflow: "auto",
-            }}
-        >
+        <HomeContainer>
             {products === undefined ? (
                 <div
                     style={{
@@ -73,6 +68,8 @@ function Home() {
                             >
                                 <Column style={{ padding: "5px" }}>
                                     <div style={{ position: "relative" }}>
+
+
                                         <img
                                             width={40}
                                             height={40}
@@ -86,16 +83,18 @@ function Home() {
                                             alt="itverse"
                                         />
                                         <Row justify="center">
-                                            <img
-                                                src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
-                                                width={130}
-                                                height={150}
-                                                alt={""}
-                                                style={{
-                                                    objectFit: "contain",
-                                                    alignSelf: "center",
-                                                    justifySelf: "center",
-                                                }}
+
+                                        <LazyLoadImage
+                                            alt=""
+                                            placeholderSrc={"https://us.123rf.com/450wm/lishchyshyn/lishchyshyn1904/lishchyshyn190403199/132862735-vector-loading-icon-futuristic-progress-design.jpg?ver=6"}
+                                            height={150}
+                                            src={`${process.env.REACT_APP_API_HOST}:${process.env.REACT_APP_API_PORT}/${res.stock_id}.jpg`}
+                                            width={130}
+                                            style={{
+                                                objectFit: "contain",
+                                                alignSelf: "center",
+                                                justifySelf: "center",
+                                            }}
                                             />
                                         </Row>
                                     </div>
@@ -150,7 +149,7 @@ function Home() {
                     )}
                 </ProductWrapper>
             )}
-        </div>
+        </HomeContainer>
     );
 }
 

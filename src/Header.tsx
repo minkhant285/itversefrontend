@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { Button, Input, AutoComplete } from "antd";
+import React, { useContext, useEffect, useState } from "react";
+import { Button, Input, AutoComplete, Modal } from "antd";
 import { StyledHeader } from "./styled";
 import { findProducts } from "./apis";
 import { Product } from "./models";
@@ -12,19 +12,35 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./providers/appProvider";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 
 function Header() {
     const [options, setOptions] = useState<any>([]);
     const [searchKey, setSearchKey] = useState<string>("");
-    const [searchFocus, setFocus] = useState<boolean>(false);
-    const [menuOpen, setMenuOpen] = useState<boolean>(false);
-    const { width } = useWindowDimensions();
     const { isAuth, logout } = useContext(AppContext);
     const navigate = useNavigate();
 
-    const onSelect = (value: string) => {
-        navigate(`/product/?pid=${value}`);
+    const [isModalVisible, setIsModalVisible] = useState(false);
+
+    const showModal = () => {
+        setIsModalVisible(true);
     };
+
+    const handleOk = () => {
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
+
+    // const onSelect = (value: string) => {
+    //     handleCancel();
+    //     navigate(`/product/?pid=${value}`);
+    //     setOptions([]);
+    //     setSearchKey("");
+    // };
 
     const searchResult = async (query: string) => {
         setSearchKey(query);
@@ -32,189 +48,143 @@ function Header() {
             query
                 .replace(/[^a-zA-Z0-9 ]/g, "")
                 .trim()
-                .split(" ")
-                .filter((d) => d !== "")
-                .join("&")
+
         );
         return resultProduct.map((product) => {
-            return {
-                value: product.stock_id,
-                label: (
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "flex-start",
-                            alignItems: "center",
-                        }}
-                    >
-                        <img
-                            src={product.picture}
-                            width={80}
-                            height={80}
-                            alt={product.stock_id}
-                        />
-                        <span
-                            style={{
-                                marginLeft: "10px",
-                                display: "flex",
-                                flexDirection: "column",
-                            }}
-                        >
-                            <ClampLines
-                                text={product.item_name}
-                                lines={1}
-                                id="clamp-lines"
-                            />
-                            <span>{product.unit_price} MMK</span>
-                            <span style={{ fontWeight: "bold" }}>
-                                "{query}"
-                            </span>
-                        </span>
-                    </div>
-                ),
-            };
+            return product;
+
         });
     };
 
-    const handleSearch = async (value: any) => {
-        setOptions(value ? await searchResult(value) : []);
-    };
+    const handleSearch = async (e:React.ChangeEvent<HTMLInputElement>) => {
+        const query = e.target.value;
+        if(query !== ""){
+
+            setOptions(await searchResult(query))
+        }else{
+            setSearchKey("");
+        }
+    }
+
+    useEffect(()=>{
+        searchKey ==="" && setOptions([])
+        // console.log(searchKey)
+    },[searchKey])
 
     return (
         <StyledHeader>
-            {(() => {
-                if (searchFocus && width < 400) {
-                    return <></>;
-                } else if (searchFocus && width > 400) {
-                    return (
-                        <>
-                            <span
-                                style={{
-                                    fontWeight: "bold",
-                                    fontSize: 18,
-                                }}
-                            >
-                                <img
-                                    width={60}
-                                    height={60}
-                                    src={require("./assets/brand.png")}
-                                    style={{
-                                        objectFit: "contain",
-                                    }}
-                                    alt="itverse"
-                                />
-                                ITVerse
-                            </span>
-                        </>
-                    );
-                } else if (!searchFocus) {
-                    return (
-                        <>
-                            <span
-                                style={{
-                                    fontWeight: "bold",
-                                    fontSize: 18,
-                                }}
-                            >
-                                <img
-                                    width={60}
-                                    height={60}
-                                    src={require("./assets/brand.png")}
-                                    style={{
-                                        objectFit: "contain",
-                                    }}
-                                    alt="itverse"
-                                />
-                                ITVerse
-                            </span>
-                        </>
-                    );
-                }
-            })()}
-
-            {width < 400 ? (
-                <>
-                    <Button
-                        type={menuOpen ? "default" : "primary"}
-                        shape="circle"
-                        icon={
-                            menuOpen ? (
-                                <MenuUnfoldOutlined />
-                            ) : (
-                                <MenuFoldOutlined />
-                            )
-                        }
-                        onClick={() => setMenuOpen(!menuOpen)}
+            <>
+                <span
+                    style={{
+                        fontWeight: "bold",
+                        fontSize: 18,
+                    }}
+                >
+                    <img
+                        width={60}
+                        height={60}
+                        src={require("./assets/brand.png")}
+                        style={{
+                            objectFit: "contain",
+                        }}
+                        alt="itverse"
                     />
-                </>
-            ) : (
-                <>
-                    {!searchFocus && (
-                        <Button
-                            type="primary"
-                            shape="circle"
-                            icon={<SearchOutlined />}
-                            onClick={() => setFocus(true)}
-                        />
-                    )}
+                    ITVerse
+                </span>
+            </>
 
-                    {searchFocus && (
-                        <div
-                            style={{
-                                display: "flex",
-                                flexDirection: "row",
-                                alignItems: "center",
-                                flex: 1,
-                                justifyContent: "flex-end",
-                            }}
-                        >
-                            <AutoComplete
-                                dropdownMatchSelectWidth={true}
+
+            <>
+                {(
+                    <Button
+                        type="primary"
+                        shape="circle"
+                        icon={<SearchOutlined />}
+                        onClick={showModal}
+                    />
+                )}
+
+
+                {isAuth && (
+                    <Button
+                        type="primary"
+                        size="middle"
+                        onClick={() => logout()}
+                    >
+                        Logout
+                    </Button>
+                )}
+            </>
+
+
+            <Modal title="Search Items In ITVerse" style={{ height: 'fit-content', top: 0 }} footer={<></>} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <div
+                    style={{
+                        display: "flex",
+                        flexDirection: "row",
+                        alignItems: "center",
+                        flex: 1,
+                        justifyContent: "flex-end",
+
+                    }}
+                >
+
+                    <Input
+                        value={searchKey}
+                        onChange={handleSearch}
+                        size="large"
+                        placeholder={"Search Item......."}
+                        allowClear
+
+                    />
+
+
+                </div>
+                <div style={{
+                    overflow: 'auto',
+                    maxHeight: '70vh',
+                    paddingTop:" 10px"
+                }}>
+                    {
+                        options.map((product: any) =>
+                            <div
+                                key={product.stock_id}
                                 style={{
-                                    width: (() => {
-                                        if (width > 700 && width < 900) {
-                                            return "60%";
-                                        } else if (width > 630 && width < 700) {
-                                            return "70%";
-                                        } else if (width < 630) {
-                                            return "95%";
-                                        } else {
-                                            return "40%";
-                                        }
-                                    })(),
-                                    alignSelf: "flex-end",
-                                }}
-                                options={options}
-                                onSelect={onSelect}
-                                onSearch={handleSearch}
-                                autoFocus
-                            >
-                                <Input
-                                    onFocus={() => setFocus(true)}
-                                    onBlur={() => setFocus(false)}
-                                    value={searchKey}
-                                    size="large"
-                                    placeholder={"Search Item......."}
-                                    allowClear
-                                />
-                            </AutoComplete>
-                            <Button type="primary" size="large">
-                                Cancel
-                            </Button>
-                        </div>
-                    )}
+                                    display: "flex",
+                                    justifyContent: "flex-start",
+                                    alignItems: "center",
 
-                    {isAuth && (
-                        <Button
-                            type="primary"
-                            size="middle"
-                            onClick={() => logout()}
-                        >
-                            Logout
-                        </Button>
-                    )}
-                </>
-            )}
+                                }}
+                            >
+
+                                <LazyLoadImage
+                                    src={product.picture}
+                                    width={80}
+                                    height={80}
+                                    alt={product.stock_id}
+                                />
+                                <span
+                                    style={{
+                                        marginLeft: "10px",
+                                        display: "flex",
+                                        flexDirection: "column",
+                                    }}
+                                >
+                                    <ClampLines
+                                        text={product.item_name}
+                                        lines={1}
+                                        id="clamp-lines"
+                                        buttons={false}
+                                    />
+                                    <span>{product.unit_price} MMK</span>
+
+                                </span>
+                            </div>
+                        )
+                    }
+                </div>
+            </Modal>
+
         </StyledHeader>
     );
 }

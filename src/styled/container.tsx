@@ -98,3 +98,20 @@ export const StyledHeader = styled.div`
     padding: 10px;
     box-shadow: 0 8px 16px 0 rgba(0, 0, 0, 0.2);
 `;
+
+export const HomeContainer = styled.div`
+    flex: 1;
+    flex-direction: column;
+    display: flex;
+    overflow: auto;
+    padding: 30px 30px;
+
+    @media (min-width: 650px) and (max-width: 900px) {
+        padding: 0px 0px;
+    }
+
+    @media (max-width: 650px) {
+        grid-template-columns: repeat(2, 1fr);
+        padding: 0px;
+    }
+`;
