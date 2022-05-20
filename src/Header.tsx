@@ -1,14 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Button, Input, AutoComplete, Modal } from "antd";
-import { StyledHeader } from "./styled";
+import { Row, StyledHeader } from "./styled";
 import { findProducts } from "./apis";
 import { Product } from "./models";
-import useWindowDimensions from "./hooks/useDimenstion";
 import ClampLines from "react-clamp-lines";
 import {
     SearchOutlined,
-    MenuFoldOutlined,
-    MenuUnfoldOutlined,
+    FilterFilled
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { AppContext } from "./providers/appProvider";
@@ -35,12 +33,12 @@ function Header() {
     };
 
 
-    // const onSelect = (value: string) => {
-    //     handleCancel();
-    //     navigate(`/product/?pid=${value}`);
-    //     setOptions([]);
-    //     setSearchKey("");
-    // };
+    const searchResultPressed = (value: string) => {
+        handleCancel();
+        navigate(`/product/?pid=${value}`);
+        setOptions([]);
+        setSearchKey("");
+    };
 
     const searchResult = async (query: string) => {
         setSearchKey(query);
@@ -56,53 +54,55 @@ function Header() {
         });
     };
 
-    const handleSearch = async (e:React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
-        if(query !== ""){
+        if (query !== "") {
 
             setOptions(await searchResult(query))
-        }else{
+        } else {
             setSearchKey("");
         }
     }
 
-    useEffect(()=>{
-        searchKey ==="" && setOptions([])
+    useEffect(() => {
+        searchKey === "" && setOptions([])
         // console.log(searchKey)
-    },[searchKey])
+    }, [searchKey])
 
     return (
         <StyledHeader>
-            <>
-                <span
+            <Row spacing="0px 5px" align="center">
+
+                <img
+                    width={50}
+                    height={50}
+                    src={require("./assets/brand.png")}
                     style={{
-                        fontWeight: "bold",
-                        fontSize: 18,
+                        objectFit: "contain",
                     }}
-                >
-                    <img
-                        width={60}
-                        height={60}
-                        src={require("./assets/brand.png")}
-                        style={{
-                            objectFit: "contain",
-                        }}
-                        alt="itverse"
-                    />
+                    alt="itverse"
+                />
+                <span style={{
+                    fontWeight: "bold",
+                    fontSize: 18,
+                }}>
                     ITVerse
                 </span>
-            </>
+            </Row>
 
 
-            <>
-                {(
-                    <Button
-                        type="primary"
-                        shape="circle"
-                        icon={<SearchOutlined />}
-                        onClick={showModal}
-                    />
-                )}
+            <Row spacing="0px 10px">
+                <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<SearchOutlined />}
+                    onClick={showModal}
+                />
+                <Button
+                    type="primary"
+                    shape="circle"
+                    icon={<FilterFilled />}
+                />
 
 
                 {isAuth && (
@@ -114,7 +114,7 @@ function Header() {
                         Logout
                     </Button>
                 )}
-            </>
+            </Row>
 
 
             <Modal title="Search Items In ITVerse" style={{ height: 'fit-content', top: 0 }} footer={<></>} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
@@ -143,11 +143,12 @@ function Header() {
                 <div style={{
                     overflow: 'auto',
                     maxHeight: '70vh',
-                    paddingTop:" 10px"
+                    paddingTop: " 10px"
                 }}>
                     {
-                        options.map((product: any) =>
+                        options.map((product: Product) =>
                             <div
+                                onClick={()=>searchResultPressed(product.stock_id)}
                                 key={product.stock_id}
                                 style={{
                                     display: "flex",

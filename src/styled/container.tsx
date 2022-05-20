@@ -104,7 +104,7 @@ export const HomeContainer = styled.div`
     flex-direction: column;
     display: flex;
     overflow: auto;
-    padding: 30px 30px;
+    padding: 10px 30px;
 
     @media (min-width: 650px) and (max-width: 900px) {
         padding: 0px 0px;
@@ -113,5 +113,17 @@ export const HomeContainer = styled.div`
     @media (max-width: 650px) {
         grid-template-columns: repeat(2, 1fr);
         padding: 0px;
+    }
+`;
+
+export const ProductDetailContainer = styled.div`
+    display: grid;
+    grid-template-columns: repeat(5,1fr);
+    padding: 20px;
+    grid-auto-rows: minmax(100px,auto);
+
+    @media (max-width: 650px) {
+        grid-template-columns: repeat(1, 1fr);
+
     }
 `;
