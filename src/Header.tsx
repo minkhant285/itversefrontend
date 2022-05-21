@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Button, Input, AutoComplete, Modal } from "antd";
-import { Row, StyledHeader } from "./styled";
+import { Button, Input, Modal, Spin } from "antd";
+import { Row, StyledHeader, Column } from "./styled";
 import { findProducts } from "./apis";
 import { Product } from "./models";
 import ClampLines from "react-clamp-lines";
@@ -16,6 +16,7 @@ function Header() {
     const [options, setOptions] = useState<any>([]);
     const [searchKey, setSearchKey] = useState<string>("");
     const { isAuth, logout } = useContext(AppContext);
+    const [isSearching, setSearching] = useState<boolean>(false);
     const navigate = useNavigate();
 
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -41,7 +42,6 @@ function Header() {
     };
 
     const searchResult = async (query: string) => {
-        setSearchKey(query);
         const resultProduct: Product[] = await findProducts(
             query
                 .replace(/[^a-zA-Z0-9 ]/g, "")
@@ -54,25 +54,25 @@ function Header() {
         });
     };
 
-    const handleSearch = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
         const query = e.target.value;
+        setSearching(true);
         if (query !== "") {
-
-            setOptions(await searchResult(query))
-        } else {
+            searchResult(query).then((res) => { setSearching(false); setOptions(res) })
+        }
+        else {
             setSearchKey("");
         }
     }
 
     useEffect(() => {
-        searchKey === "" && setOptions([])
+        if (searchKey === "") { setOptions([]); setSearching(false) }
         // console.log(searchKey)
-    }, [searchKey])
+    }, [searchKey,isSearching])
 
     return (
         <StyledHeader>
             <Row spacing="0px 5px" align="center">
-
                 <img
                     width={50}
                     height={50}
@@ -117,7 +117,7 @@ function Header() {
             </Row>
 
 
-            <Modal title="Search Items In ITVerse" style={{ height: 'fit-content', top: 0 }} footer={<></>} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+            <Modal  title="Search Items In ITVerse" style={{ height: 'fit-content', top: 0 }} footer={<></>} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <div
                     style={{
                         display: "flex",
@@ -131,24 +131,25 @@ function Header() {
 
                     <Input
                         value={searchKey}
-                        onChange={handleSearch}
+                        autoFocus={true}
+                        onChange={(e)=>{setSearchKey(e.target.value);handleSearch(e);}}
                         size="large"
                         placeholder={"Search Item......."}
                         allowClear
-
                     />
 
 
                 </div>
-                <div style={{
+                <Column style={{
                     overflow: 'auto',
                     maxHeight: '70vh',
                     paddingTop: " 10px"
                 }}>
-                    {
+
+                    {isSearching ? <Spin tip="loading..." /> :
                         options.map((product: Product) =>
                             <div
-                                onClick={()=>searchResultPressed(product.stock_id)}
+                                onClick={() => searchResultPressed(product.stock_id)}
                                 key={product.stock_id}
                                 style={{
                                     display: "flex",
@@ -159,6 +160,7 @@ function Header() {
                             >
 
                                 <LazyLoadImage
+                                    placeholderSrc={"https://us.123rf.com/450wm/lishchyshyn/lishchyshyn1904/lishchyshyn190403199/132862735-vector-loading-icon-futuristic-progress-design.jpg?ver=6"}
                                     src={product.picture}
                                     width={80}
                                     height={80}
@@ -183,7 +185,7 @@ function Header() {
                             </div>
                         )
                     }
-                </div>
+                </Column>
             </Modal>
 
         </StyledHeader>

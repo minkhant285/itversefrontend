@@ -15,16 +15,7 @@ function Dashboard() {
     return (
         <>
             {isAuth ? (
-                <Column align="flex-end">
-                    <Button type="primary" icon={<PlusOutlined />}>
-                        {" "}
-                        Add New Product{" "}
-                    </Button>
-                    <Row spacing={width > 500 ? "10px" : "3px"}>
-                        {/* {width > 500 && <ProductForm />} */}
-                        <ProductList />
-                    </Row>
-                </Column>
+                <ProductList />
             ) : (
                 <Navigate to={`/login`} />
             )}

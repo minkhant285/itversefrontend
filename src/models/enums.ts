@@ -2,5 +2,8 @@ export enum ProductCategory {
     Power,
     DevelopmentBoard,
     Module,
-    Accessory
+    Accessory,
+    IC,
+    Sensor,
+    Motor,
 }

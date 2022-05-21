@@ -1,18 +1,14 @@
-import { Button, Modal } from "antd";
 import React, { useState } from "react";
 import { LazyLoadImage } from "react-lazy-load-image-component";
 import { useSearchParams } from "react-router-dom";
 import { getProductById } from "./apis";
 import { Product } from "./models";
 import { Column, ProductDetailContainer } from "./styled";
-import UpdateForm from "./updateForm";
 
 const ProductDetail: React.FC = () => {
     const [product, setProduct] = useState<Product>();
     const [searchParams, setSearchParams] = useSearchParams();
     const [showModal, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
 
     const paramData = searchParams.get("pid") || "";
     React.useEffect(() => {
@@ -46,23 +42,10 @@ const ProductDetail: React.FC = () => {
                         <span> Buy Price : {product?.buy_price} USD </span>
                     )}
                     <span> Description : {product?.description} </span>
-                    {localStorage.getItem("accessToken") && (
-                        <Button onClick={() => setShow(true)}>Update</Button>
-                    )}
+
                 </Column>
 
             </ProductDetailContainer>
-            <Modal
-                centered
-                title="Update Product"
-                style={{ height: "fit-content" }}
-                visible={showModal}
-                onOk={handleClose}
-                onCancel={handleClose}
-                footer={<></>}
-            >
-                <UpdateForm product={product} setShow={setShow} />
-            </Modal>
         </>
     );
 };

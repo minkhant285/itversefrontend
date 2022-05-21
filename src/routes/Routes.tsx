@@ -4,6 +4,7 @@ import Header from "../Header";
 import Home from "../Home";
 import Login from "../Login";
 import ProductDetail from "../ProductDetail";
+import UpdatePage from "../UpdatePage";
 
 const AppRoutes = () => {
     return (
@@ -11,6 +12,7 @@ const AppRoutes = () => {
             <Header />
             <Routes>
                 <Route path="/page/:pnum" element={<Home />} />
+                <Route path="/dashboard/product/update/" element={<UpdatePage />} />
                 <Route path="/page/" element={<Navigate to={"/page/1"} />} />
                 <Route path="/" element={<Navigate to={"/page/1"} />} />
                 <Route path="product" element={<ProductDetail />} />
