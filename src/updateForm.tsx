@@ -18,7 +18,7 @@ const UpdateForm: React.FC<{ product: Product; }> = ({
     const [category, SetCategory] = useState<number>(product.category_id);
     const { values, handleFormInputChange } = useFormInput({
         sku: product.sku,
-        buy_price: product.buy_price,
+        // buy_price: product.buy_price,
 
         item_name: product.item_name,
         picture: product.picture,
@@ -31,7 +31,7 @@ const UpdateForm: React.FC<{ product: Product; }> = ({
         e.preventDefault();
         productUpdate(product.stock_id, {
             sku: values.sku,
-            buy_price: values.buy_price,
+            // buy_price: values.buy_price,
             category_id: category,
             item_name: values.item_name,
             picture: values.picture,
@@ -70,14 +70,14 @@ const UpdateForm: React.FC<{ product: Product; }> = ({
                         required
                     />
                     <Text>Buy Price</Text>
-                    <Input
+                    {/* <Input
                         value={values.buy_price}
                         type={"text"}
                         placeholder="Buy Price"
                         onChange={handleFormInputChange}
                         name="buy_price"
                         required
-                    />
+                    /> */}
                     <Text>Unit Price</Text>
                     <Input
                         value={values.unit_price}

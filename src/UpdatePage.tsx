@@ -8,7 +8,7 @@ const UpdatePage = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const paramData = searchParams.get("pid") || "";
     const [product, setProduct] = useState<Product>({
-        buy_price:0.0,
+        // buy_price:0.0,
         category_id:0,
         description:"",
         item_name:'',

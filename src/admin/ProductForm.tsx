@@ -12,7 +12,7 @@ const ProductForm: React.FC = () => {
         e.preventDefault();
         addProduct({
             sku: values.sku,
-            buy_price: values.buy_price,
+            // buy_price: values.buy_price,
             category_id: values.category,
             item_name: values.title,
             picture: values.photo_url,
@@ -60,7 +60,7 @@ const ProductForm: React.FC = () => {
                             required
                         />
                     </Column>
-                    <Column style={{ marginBottom: "10px" }}>
+                    {/* <Column style={{ marginBottom: "10px" }}>
                         <Text color="#fff" fWeight="bold">
                             Buy Price
                         </Text>
@@ -72,7 +72,7 @@ const ProductForm: React.FC = () => {
                             name="buy_price"
                             required
                         />
-                    </Column>
+                    </Column> */}
                     <Column style={{ marginBottom: "10px" }}>
                         <Text color="#fff" fWeight="bold">
                             Unit Price

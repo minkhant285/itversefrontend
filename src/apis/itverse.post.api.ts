@@ -9,7 +9,7 @@ export function addProduct(product: ProductInput) {
             item_name: product.item_name,
             unit_in_stock: product.unit_in_stock,
             unit_price: product.unit_price,
-            buy_price: product.buy_price,
+            // buy_price: product.buy_price,
             category_id: product.category_id,
             picture: product.picture,
             description: product.description

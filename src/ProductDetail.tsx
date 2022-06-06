@@ -38,9 +38,6 @@ const ProductDetail: React.FC = () => {
                     <span style={{ fontWeight: 'bold', fontSize: '1.3em' }}>{product?.item_name}</span>
                     <span> Price : {product?.unit_price} MMK</span>
                     <span> Stock : {product?.unit_in_stock} </span>
-                    {localStorage.getItem("accessToken") && (
-                        <span> Buy Price : {product?.buy_price} USD </span>
-                    )}
                     <span> Description : {product?.description} </span>
 
                 </Column>
